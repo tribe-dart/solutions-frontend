@@ -12,7 +12,11 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const metadataBaseUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(metadataBaseUrl),
   title: "innov8ive Solutions | Accessibility Guides and Updates",
   description:
     "innov8ive Solutions shares accessibility guidance, inclusive design practices, and assistive technology updates.",
