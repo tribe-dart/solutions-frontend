@@ -209,10 +209,10 @@ export default function DetailPageLayout({
           </Link>
           <nav className="hidden items-center gap-5 text-xs font-semibold md:flex">
             <Link href="/">Home</Link>
-            <a href="#">About</a>
+            <Link href="/about">About</Link>
             <Link href="/articles">Guides</Link>
             <Link href="/news">Updates</Link>
-            <a href="#">Contact</a>
+            <Link href="/contact">Contact</Link>
           </nav>
           <div className="flex shrink-0 gap-2">
             <Link

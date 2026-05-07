@@ -54,18 +54,18 @@ export default async function Home({ searchParams }: HomeProps) {
               <Link className="transition hover:text-white" href="/">
                 Home
               </Link>
-              <a className="transition hover:text-white" href="#">
+              <Link className="transition hover:text-white" href="/about">
                 About
-              </a>
+              </Link>
               <Link className="transition hover:text-white" href="/news">
                 Updates
               </Link>
               <Link className="transition hover:text-white" href="/articles">
                 Guides
               </Link>
-              <a className="transition hover:text-white" href="#">
+              <Link className="transition hover:text-white" href="/contact">
                 Contact
-              </a>
+              </Link>
             </nav>
           </header>
 
