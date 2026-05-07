@@ -21,22 +21,22 @@ export const metadata: Metadata = {
   description:
     "innov8ive Solutions shares accessibility guidance, inclusive design practices, and assistive technology updates.",
   icons: {
-    icon: "/globe.svg",
-    shortcut: "/globe.svg",
-    apple: "/globe.svg",
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
   },
   openGraph: {
     title: "innov8ive Solutions | Accessibility Guides and Updates",
     description:
       "Accessibility guidance, inclusive design practices, and assistive technology updates.",
-    images: ["/globe.svg"],
+    images: ["/logo.png"],
   },
   twitter: {
     card: "summary_large_image",
     title: "innov8ive Solutions | Accessibility Guides and Updates",
     description:
       "Accessibility guidance, inclusive design practices, and assistive technology updates.",
-    images: ["/globe.svg"],
+    images: ["/logo.png"],
   },
 };
 

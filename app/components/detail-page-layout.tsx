@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { Innov8iveItem, TaxonomySummary } from "../content";
 import RichContentRenderer from "./rich-content-renderer";
@@ -195,9 +196,16 @@ export default function DetailPageLayout({
           <Link
             href="/"
             aria-label="innov8ive Solutions Home"
-            className="rounded-full bg-white px-4 py-2 text-lg font-black tracking-tight text-[#10243f]"
+            className="inline-flex items-center rounded-full bg-white px-4 py-2"
           >
-            innov8ive Solutions
+            <Image
+              src="/logo.png"
+              alt="innov8ive Solutions logo"
+              width={160}
+              height={44}
+              className="h-10 w-auto object-contain"
+              priority
+            />
           </Link>
           <nav className="hidden items-center gap-5 text-xs font-semibold md:flex">
             <Link href="/">Home</Link>

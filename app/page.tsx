@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import ContentCard from "./components/content-card";
 import HomeSearchForm from "./components/home-search-form";
@@ -37,10 +38,17 @@ export default async function Home({ searchParams }: HomeProps) {
           <header className="relative z-10 flex flex-col gap-4 text-white sm:flex-row sm:items-center sm:justify-between">
             <Link
               href="/"
-              className="inline-flex items-center rounded-full bg-white px-4 py-2 text-lg font-black tracking-tight text-[#10243f]"
+              className="inline-flex items-center rounded-full bg-white px-4 py-2"
               aria-label="innov8ive Solutions Home"
             >
-              innov8ive Solutions
+              <Image
+                src="/logo.png"
+                alt="innov8ive Solutions logo"
+                width={160}
+                height={44}
+                className="h-10 w-auto object-contain"
+                priority
+              />
             </Link>
             <nav className="flex flex-wrap gap-3 text-sm font-medium text-white/90 sm:gap-6">
               <Link className="transition hover:text-white" href="/">
