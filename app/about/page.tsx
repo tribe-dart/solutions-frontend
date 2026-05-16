@@ -1,42 +1,127 @@
+import Image from "next/image";
 import Link from "next/link";
+import PageHero from "../components/page-hero";
+import SiteFooter from "../components/site-footer";
+import SiteHeader from "../components/site-header";
+
+const teamImage =
+  "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=900&q=80";
+const visionImage =
+  "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=900&q=80";
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen bg-[#f8fbff] px-5 py-8 sm:px-8">
-      <div className="mx-auto max-w-4xl rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200 sm:p-10">
-        <Link
-          href="/"
-          className="text-sm font-semibold text-[#0f766e] transition hover:text-[#115e59]"
-        >
-          ← Back to Home
-        </Link>
+    <div className="min-h-screen bg-white">
+      <SiteHeader active="about" />
+      <PageHero title="About Us" />
 
-        <p className="mt-8 text-xs font-bold uppercase tracking-[0.18em] text-[#0f766e]">
-          About
-        </p>
-        <h1 className="mt-2 text-[clamp(2rem,7vw,3rem)] font-black tracking-tight text-[#10243f]">
-          innov8ive Solutions
-        </h1>
+      <section className="px-4 py-12 sm:px-8 sm:py-16">
+        <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-2">
+          <div className="relative">
+            <Image
+              src={teamImage}
+              alt="Team collaborating on accessibility initiatives"
+              width={640}
+              height={480}
+              className="w-full rounded-2xl object-cover"
+            />
+            <span className="absolute bottom-4 left-4 rounded-lg bg-[#c69762] px-4 py-2 text-sm font-bold text-black">
+              5+ Years Of Experience
+            </span>
+          </div>
 
-        <div className="mt-6 space-y-4 text-base leading-8 text-slate-700">
-          <p>
-            innov8ive Solutions is an accessibility-focused publication and
-            resource hub. We help teams design and ship inclusive digital
-            products through practical guides, implementation insights, and
-            standards updates.
-          </p>
-          <p>
-            Our goal is simple: make accessibility actionable for product
-            teams, content teams, and engineering teams. We focus on real
-            workflows, not checklists in isolation.
-          </p>
-          <p>
-            From keyboard-first interaction patterns to content clarity and
-            assistive technology compatibility, we share resources that help
-            organizations build experiences that work for more people.
-          </p>
+          <div>
+            <p className="text-sm font-semibold text-neutral-600">About Us</p>
+            <h2 className="mt-2 text-3xl font-bold text-black sm:text-4xl">
+              Building inclusive digital experiences
+            </h2>
+            <div className="mt-5 space-y-4 text-sm leading-7 text-neutral-700 sm:text-base">
+              <p>
+                innov8ive Solutions helps organizations design, build, and
+                maintain accessible digital products. We translate standards into
+                practical guidance teams can apply every day.
+              </p>
+              <p>
+                Our work spans audits, inclusive design systems, content
+                strategy, and assistive technology compatibility. We believe
+                accessibility is a quality practice, not a one-time checklist.
+              </p>
+            </div>
+            <Link
+              href="/contact"
+              className="mt-8 inline-flex rounded-full bg-black px-8 py-3 text-sm font-bold text-white transition hover:bg-neutral-800"
+            >
+              Contact Us
+            </Link>
+          </div>
         </div>
-      </div>
-    </main>
+      </section>
+
+      <section className="px-4 pb-12 sm:px-8">
+        <div className="mx-auto max-w-7xl rounded-2xl bg-[#ececec] p-8 sm:p-10">
+          <h2 className="text-2xl font-bold text-black sm:text-3xl">Our Mission</h2>
+          <p className="mt-4 text-sm leading-8 text-neutral-700 sm:text-base">
+            Our mission is to make accessibility achievable for every team. We
+            provide resources, training, and implementation support that help
+            organizations meet WCAG requirements while improving usability for
+            everyone. From public sector services to product companies, we help
+            teams embed inclusive practices into design, engineering, and
+            content workflows.
+          </p>
+          <div className="mt-8 h-1 w-full rounded-full bg-[#c69762]" aria-hidden />
+        </div>
+      </section>
+
+      <section className="px-4 pb-12 sm:px-8">
+        <div className="mx-auto grid max-w-7xl overflow-hidden rounded-2xl lg:grid-cols-2">
+          <Image
+            src={visionImage}
+            alt="Team working together"
+            width={640}
+            height={480}
+            className="h-full min-h-[280px] w-full object-cover"
+          />
+          <div className="flex flex-col justify-center bg-[#c69762] p-8 sm:p-12">
+            <h2 className="text-2xl font-bold text-black sm:text-3xl">Our Vision</h2>
+            <p className="mt-4 text-sm leading-8 text-black sm:text-base">
+              To create, connect, and embed accessibility around the globe.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="px-4 pb-16 sm:px-8">
+        <div className="mx-auto max-w-7xl">
+          <h2 className="mb-8 text-center text-2xl font-bold text-black sm:text-left sm:text-3xl">
+            Core Values
+          </h2>
+          <div className="grid gap-8 md:grid-cols-3">
+            <div>
+              <h3 className="text-lg font-bold text-black">Core Values</h3>
+              <p className="mt-3 text-sm leading-7 text-neutral-700">
+                We build a community where accessibility knowledge is shared
+                openly and teams learn from real implementation experience.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-black">Empower</h3>
+              <p className="mt-3 text-sm leading-7 text-neutral-700">
+                We empower organizations through partnerships, training, and
+                hands-on support that turns standards into everyday practice.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-black">Innovate</h3>
+              <p className="mt-3 text-sm leading-7 text-neutral-700">
+                We innovate with technology and design patterns that remove
+                barriers and improve access for people with diverse needs.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <SiteFooter />
+    </div>
   );
 }
