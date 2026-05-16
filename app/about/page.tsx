@@ -4,16 +4,15 @@ import PageHero from "../components/page-hero";
 import SiteFooter from "../components/site-footer";
 import SiteHeader from "../components/site-header";
 
-const teamImage =
-  "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=900&q=80";
-const visionImage =
-  "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=900&q=80";
+const heroImage = "/pages/hero-team.png";
+const teamImage = "/pages/about-team-1.png";
+const visionImage = "/pages/about-team-2.png";
 
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-white">
       <SiteHeader active="about" />
-      <PageHero title="About Us" />
+      <PageHero title="About Us" imageUrl={heroImage} />
 
       <section className="px-4 py-12 sm:px-8 sm:py-16">
         <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-2">

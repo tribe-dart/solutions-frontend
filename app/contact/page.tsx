@@ -11,7 +11,7 @@ export default async function ContactPage() {
   return (
     <div className="min-h-screen bg-white">
       <SiteHeader active="contact" />
-      <PageHero title="Contact Us" />
+      <PageHero title="Contact Us" imageUrl="/pages/hero-team.png" />
 
       <section className="px-4 py-12 sm:px-8 sm:py-16">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-2 lg:gap-14">

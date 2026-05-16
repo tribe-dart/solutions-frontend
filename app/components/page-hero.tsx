@@ -3,8 +3,7 @@ type PageHeroProps = {
   imageUrl?: string;
 };
 
-const defaultHeroImage =
-  "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1600&q=80";
+const defaultHeroImage = "/pages/hero-team.png";
 
 export default function PageHero({ title, imageUrl }: PageHeroProps) {
   return (
