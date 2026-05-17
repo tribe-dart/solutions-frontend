@@ -1,7 +1,8 @@
-import Image from "next/image";
 import Link from "next/link";
 import type { Innov8iveItem, TaxonomySummary } from "../content";
 import RichContentRenderer from "./rich-content-renderer";
+import SiteFooter from "./site-footer";
+import SiteHeader from "./site-header";
 
 type DetailPageLayoutProps = {
   item: Innov8iveItem;
@@ -10,6 +11,7 @@ type DetailPageLayoutProps = {
   relatedItems: Innov8iveItem[];
   sidebarCategories: TaxonomySummary[];
   sidebarCountries: TaxonomySummary[];
+  headerActive?: "home" | "about" | "news" | "contact";
 };
 
 type TaxonomyItem = {
@@ -19,53 +21,66 @@ type TaxonomyItem = {
   count?: number;
 };
 
+const countryCodeBySlug: Record<string, string> = {
+  global: "un",
+  ghana: "gh",
+  canada: "ca",
+  usa: "us",
+  "united-states": "us",
+  "united-kingdom": "gb",
+  germany: "de",
+};
+
 const uniqueBySlug = (items: TaxonomyItem[]) => {
   const seen = new Set<string>();
 
-  return items.filter((item) => {
-    if (seen.has(item.slug)) {
+  return items.filter((entry) => {
+    if (seen.has(entry.slug)) {
       return false;
     }
 
-    seen.add(item.slug);
+    seen.add(entry.slug);
     return true;
   });
 };
 
-const formatDate = (date?: string) => {
+const formatOrdinalDate = (date?: string) => {
   if (!date) {
-    return "";
+    return "16th April 2024";
   }
 
-  return new Intl.DateTimeFormat("en", {
-    month: "short",
-    day: "2-digit",
+  const parsed = new Date(date);
+  const day = parsed.getDate();
+  const suffix =
+    day % 10 === 1 && day !== 11
+      ? "st"
+      : day % 10 === 2 && day !== 12
+        ? "nd"
+        : day % 10 === 3 && day !== 13
+          ? "rd"
+          : "th";
+
+  const monthYear = new Intl.DateTimeFormat("en-GB", {
+    month: "long",
     year: "numeric",
-  }).format(new Date(date));
+  }).format(parsed);
+
+  return `${day}${suffix} ${monthYear}`;
 };
 
-const AdvertCard = ({ wide = false }: { wide?: boolean }) => (
+const AdvertBlock = ({ tall = false }: { tall?: boolean }) => (
   <aside
-    className={`rounded-2xl bg-white p-2 shadow-sm ring-1 ring-black/5 ${
-      wide ? "" : "lg:sticky lg:top-4"
+    className={`grid place-items-center rounded-2xl bg-[#d9a066] text-center font-black uppercase leading-tight text-white shadow-sm ${
+      tall ? "min-h-[280px] px-4 text-3xl lg:sticky lg:top-4" : "min-h-32 px-4 text-2xl"
     }`}
   >
-    <p className="mb-2 text-[10px] font-semibold text-slate-500">
-      Resource spotlight
-    </p>
-    <div
-      className={`grid place-items-center rounded-xl bg-[#10243f] px-4 text-center font-black uppercase leading-none text-[#5eead4] ${
-        wide ? "h-32 text-3xl" : "h-64 text-4xl"
-      }`}
-    >
-      Build
-      <br />
-      Accessibly
-    </div>
+    Advertise
+    <br />
+    Here
   </aside>
 );
 
-const SidebarList = ({
+const SidebarWidget = ({
   title,
   items,
   getHref,
@@ -74,28 +89,25 @@ const SidebarList = ({
   items: TaxonomyItem[];
   getHref: (item: TaxonomyItem) => string;
 }) => (
-  <section className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/5">
-    <h2 className="mb-3 rounded-full bg-[#5eead4] px-3 py-1 text-xs font-black uppercase tracking-wide text-[#10243f]">
+  <section className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5">
+    <div className="bg-black px-4 py-2.5 text-xs font-bold uppercase tracking-wide text-white">
       {title}
-    </h2>
-    {items.length ? (
-      <div className="grid gap-2">
-        {items.map((item) => (
+    </div>
+    <div className="grid gap-0 p-4">
+      {items.length ? (
+        items.map((entry) => (
           <Link
-            key={`${title}-${item.id}`}
-            href={getHref(item)}
-            className="flex items-start justify-between gap-3 border-b border-slate-200 pb-1 text-sm font-semibold text-slate-800 last:border-b-0"
+            key={`${title}-${entry.id}`}
+            href={getHref(entry)}
+            className="border-b border-neutral-200 py-2.5 text-sm font-medium text-black last:border-b-0 hover:text-[#c69762]"
           >
-            <span className="min-w-0 wrap-break-word">{item.name}</span>
-            {typeof item.count === "number" ? (
-              <span className="shrink-0 text-xs text-slate-400">{item.count}</span>
-            ) : null}
+            {entry.name}
           </Link>
-        ))}
-      </div>
-    ) : (
-      <p className="text-sm text-slate-500">No items attached yet.</p>
-    )}
+        ))
+      ) : (
+        <p className="text-sm text-neutral-500">No items yet.</p>
+      )}
+    </div>
   </section>
 );
 
@@ -108,63 +120,81 @@ const RelatedCard = ({
 }) => (
   <Link
     href={href}
-    className="block min-w-[74vw] max-w-[74vw] no-underline min-[420px]:min-w-[210px] min-[420px]:max-w-[210px]"
+    className="block min-w-[220px] max-w-[220px] shrink-0 no-underline sm:min-w-[240px] sm:max-w-[240px]"
   >
-    <article className="overflow-hidden rounded-xl bg-white p-2 shadow-sm ring-1 ring-black/5 transition hover:-translate-y-0.5 hover:shadow-md">
+    <article>
       <div
-        className="h-28 rounded-lg bg-cover bg-center"
+        className="aspect-4/3 rounded-2xl bg-cover bg-center"
         style={{ backgroundImage: `url(${item.image})` }}
-        aria-hidden="true"
+        aria-hidden
       />
-      <h3 className="mt-2 line-clamp-2 wrap-break-word text-sm font-bold leading-tight text-slate-950">
+      <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px] text-neutral-600">
+        <span>{formatOrdinalDate(item.createdAt)}</span>
+        <span aria-hidden>•</span>
+        <span>1.5k Views</span>
+        <span aria-hidden>•</span>
+        <span>0</span>
+        <span
+          className="ml-auto inline-block h-3 w-4 rounded-sm bg-[#c69762]"
+          aria-hidden
+        />
+      </div>
+      <p className="mt-2 line-clamp-3 text-sm font-semibold leading-snug text-black">
         {item.title}
-      </h3>
+      </p>
     </article>
   </Link>
 );
 
 const Conversation = () => (
-  <section className="mt-8">
-    <h2 className="text-xl font-black text-slate-950">Conversation</h2>
-    <p className="mt-1 max-w-2xl text-sm text-slate-600">
+  <section className="mt-8 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5 sm:p-6">
+    <h2 className="text-xl font-bold text-black">Conversation</h2>
+    <p className="mt-2 max-w-2xl text-sm leading-6 text-neutral-600">
       All comments are subject to our Community Guidelines. Please keep the
       conversation respectful and constructive.
     </p>
-    <div className="mt-4 flex items-center gap-3 max-[420px]:items-start">
-      <div className="grid h-11 w-11 place-items-center rounded-full bg-white text-slate-400 shadow-sm">
+
+    <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+      <div className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-neutral-200 text-neutral-500">
         ●
       </div>
       <input
-        className="h-12 min-w-0 flex-1 rounded-xl border border-slate-300 bg-white px-4 text-sm outline-none"
+        className="h-12 min-w-0 flex-1 rounded-xl border border-neutral-200 bg-[#ececec] px-4 text-sm outline-none"
         placeholder="Join the conversation"
       />
-    </div>
-    <div className="mt-3 flex justify-center">
       <button
         type="button"
-        className="rounded-full bg-[#d0873a] px-6 py-2 text-sm font-bold text-slate-950"
+        className="h-12 shrink-0 rounded-full bg-black px-8 text-sm font-bold text-white"
       >
-        Share
+        Post
       </button>
     </div>
+
     <div className="mt-8 grid gap-6">
-      {["Amina", "Jonah"].map((name, index) => (
+      {["MrsMason", "MrsMason"].map((name, index) => (
         <article key={`${name}-${index}`} className="flex gap-3">
-          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#10243f] text-sm font-bold text-white">
+          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-black text-sm font-bold text-white">
             {name[0]}
           </div>
           <div className="min-w-0">
-            <p className="text-sm font-black text-slate-900">
-              {name} <span className="ml-2 text-xs font-semibold text-slate-400">4h ago</span>
+            <p className="text-sm font-bold text-black">
+              {name}{" "}
+              <span className="ml-2 text-xs font-semibold uppercase text-neutral-400">
+                44 min ago
+              </span>
             </p>
-            <p className="mt-2 max-w-2xl wrap-break-word text-sm leading-6 text-slate-700">
-              This resource helped our team spot barriers earlier in the design
-              review.
+            <p className="mt-2 text-sm leading-6 text-neutral-700">
+              Your article says a lot about accessibility standards. Try hiring
+              a proof reader before publishing.
             </p>
-            <div className="mt-2 flex gap-3 text-sm text-slate-500">
+            <div className="mt-2 flex gap-4 text-xs font-semibold uppercase text-neutral-500">
               <button type="button">Reply</button>
-              <button type="button">▲</button>
-              <button type="button">▼</button>
+              <button type="button" aria-label="Upvote">
+                ▲
+              </button>
+              <button type="button" aria-label="Downvote">
+                ▼
+              </button>
             </div>
           </div>
         </article>
@@ -180,143 +210,137 @@ export default function DetailPageLayout({
   relatedItems,
   sidebarCategories,
   sidebarCountries,
+  headerActive = "news",
 }: DetailPageLayoutProps) {
   const categories = uniqueBySlug(item.postCategories ?? []);
   const countries = uniqueBySlug(item.countries ?? []);
-  const tagItems = item.tags ?? [];
+  const categoryLabel = categories[0]?.name ?? label;
+  const country = countries[0];
+  const countryCode = country ? countryCodeBySlug[country.slug] : "gh";
   const related = relatedItems
     .filter((relatedItem) => relatedItem.slug !== item.slug)
-    .slice(0, 6);
-  const displayDate = formatDate(item.createdAt);
+    .slice(0, 3);
+  const displayDate = formatOrdinalDate(item.createdAt);
+  const breadcrumbDate = item.createdAt
+    ? new Intl.DateTimeFormat("en-CA").format(new Date(item.createdAt)).replace(/-/g, " ")
+    : "2026 04 30";
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#f4f7fb] text-slate-950">
-      <header className="bg-[#10243f] px-4 py-3 text-white sm:px-8">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 sm:gap-5">
-          <Link
-            href="/"
-            aria-label="innov8ive Solutions Home"
-            className="inline-flex items-center rounded-full bg-white px-4 py-2"
-          >
-            <Image
-              src="/logo.png"
-              alt="innov8ive Solutions logo"
-              width={160}
-              height={44}
-              className="h-10 w-auto object-contain"
-              priority
-            />
-          </Link>
-          <nav className="hidden items-center gap-5 text-xs font-semibold md:flex">
-            <Link href="/">Home</Link>
-            <Link href="/about">About</Link>
-            <Link href="/articles">Guides</Link>
-            <Link href="/news">Updates</Link>
-            <Link href="/contact">Contact</Link>
-          </nav>
-          <div className="flex shrink-0 gap-2">
-            <Link
-              href="/admin"
-              className="rounded-full bg-[#5eead4] px-4 py-1.5 text-xs font-bold text-[#10243f]"
-            >
-              Login
-            </Link>
-            <button className="rounded-full bg-white px-4 py-1.5 text-xs font-bold text-slate-950">
-              Sign up
-            </button>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-[#ececec] text-black">
+      <SiteHeader active={headerActive} />
 
-      <main className="mx-auto max-w-7xl px-4 py-4 sm:px-8 sm:py-5">
-        <p className="mb-4 wrap-break-word text-xs font-semibold leading-5 text-slate-700">
-          You are here: <Link href="/">Home</Link> &raquo; {label}
-          {displayDate ? ` &raquo; ${displayDate}` : ""} &raquo; {item.title}
+      <div className="border-b border-neutral-300 bg-[#e3e3e3] px-4 py-2 text-xs text-neutral-700 sm:px-8">
+        <p className="mx-auto max-w-7xl wrap-break-word">
+          You are here: <Link href="/" className="font-semibold hover:underline">Home</Link>
+          {" » "}
+          <span>{categoryLabel}</span>
+          {" » "}
+          <span>{breadcrumbDate}</span>
+          {" » "}
+          <span className="text-neutral-600">Article {item.slug.slice(0, 8)}</span>
         </p>
+      </div>
 
-        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_300px]">
-          <div className="min-w-0">
-            <article className="min-w-0 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/5 sm:p-5">
-              <div className="mb-3 flex flex-wrap items-start gap-2 sm:items-center">
-                {categories[0] ? (
-                  <span className="min-w-0 wrap-break-word text-sm font-black text-slate-950">
-                    {categories[0].name}
-                  </span>
-                ) : (
-                  <span className="text-sm font-black text-slate-950">{label}</span>
-                )}
-                <div className="flex w-full flex-wrap items-center gap-2 sm:ml-auto sm:w-auto sm:justify-end">
-                  {tagItems.slice(0, 2).map((tag) => (
+      <main className="mx-auto max-w-7xl px-4 py-6 sm:px-8">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
+          <div className="min-w-0 space-y-6">
+            <article className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5 sm:p-7">
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="rounded-md bg-neutral-700 px-3 py-1 text-xs font-bold uppercase tracking-wide text-white">
+                  {categoryLabel}
+                </span>
+                <div className="flex flex-wrap items-center gap-2 text-xs text-neutral-600">
+                  <span>{displayDate}</span>
+                  <span aria-hidden>•</span>
+                  <span>1.5k Views</span>
+                  <span aria-hidden>•</span>
+                  <span>0</span>
+                  {countryCode ? (
                     <span
-                      key={`tag-${tag.id}`}
-                      className="max-w-full wrap-break-word rounded-full bg-slate-100 px-2 py-1 text-[10px] font-bold uppercase text-slate-600"
-                    >
-                      #{tag.name}
-                    </span>
-                  ))}
-                  {countries.slice(0, 2).map((country) => (
-                    <span
-                      key={`country-${country.id}`}
-                      className="max-w-full wrap-break-word rounded-full bg-[#ccfbf1] px-2 py-1 text-[10px] font-bold text-[#115e59]"
-                    >
-                      {country.name}
-                    </span>
-                  ))}
+                      className="ml-1 inline-block h-3.5 w-5 rounded-sm bg-cover bg-center"
+                      style={{
+                        backgroundImage: `url(https://flagcdn.com/w40/${countryCode}.png)`,
+                      }}
+                      title={country?.name}
+                      aria-label={country?.name}
+                    />
+                  ) : null}
                 </div>
               </div>
-              <h1 className="max-w-3xl wrap-break-word text-[clamp(2rem,9vw,3rem)] font-black leading-tight tracking-[-0.035em] text-slate-950 sm:text-5xl sm:leading-[0.98]">
+
+              <h1 className="mt-5 font-serif text-[clamp(1.75rem,4vw,2.75rem)] font-bold leading-tight tracking-tight text-black">
                 {item.title}
               </h1>
+
               <div
-                className="mt-5 aspect-4/3 rounded-xl bg-cover bg-center sm:aspect-auto sm:h-[390px]"
+                className="mt-6 aspect-4/3 rounded-2xl bg-cover bg-center sm:aspect-auto sm:h-[390px]"
                 style={{ backgroundImage: `url(${item.image})` }}
-                aria-hidden="true"
+                aria-hidden
               />
-              <p className="mt-5 wrap-break-word text-base font-semibold leading-7 text-slate-800">
+
+              <p className="mt-6 text-base font-medium leading-8 text-neutral-800">
                 {item.summary}
               </p>
-              <div className="detail-content mt-5 min-w-0">
+
+              <div className="detail-content mt-6 min-w-0">
                 <RichContentRenderer
                   contentJson={item.contentJson}
                   fallbackParagraphs={item.content}
                   excludedImageSrcs={[item.image]}
                 />
               </div>
+
               {item.citation?.text ? (
-                <aside className="mt-6 border-t border-slate-200 pt-4">
-                  <span className="text-xs font-black uppercase tracking-[0.18em] text-slate-500">
-                      Source
+                <aside className="mt-8 border-t border-neutral-200 pt-5">
+                  <span className="text-xs font-bold uppercase tracking-[0.16em] text-neutral-500">
+                    Source
                   </span>
                   {item.citation.url ? (
                     <a
                       href={item.citation.url}
                       target="_blank"
                       rel="noreferrer"
-                      className="mt-2 block text-sm font-semibold text-[#0f766e] underline"
+                      className="mt-2 block text-sm font-semibold text-[#c69762] underline"
                     >
                       {item.citation.text}
                     </a>
                   ) : (
-                    <p className="mt-2 text-sm text-slate-700">{item.citation.text}</p>
+                    <p className="mt-2 text-sm text-neutral-700">{item.citation.text}</p>
                   )}
                 </aside>
               ) : null}
             </article>
 
             {related.length ? (
-              <section className="mt-8 min-w-0">
-                <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-                  <h2 className="text-xl font-black text-slate-950">
-                    Related Resources
-                  </h2>
-                  <Link
-                    href={detailPath}
-                    className="text-sm font-bold text-slate-700"
-                  >
-                    View All
-                  </Link>
+              <section className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5 sm:p-6">
+                <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                  <h2 className="text-xl font-bold text-black">Related Articles</h2>
+                  <div className="flex items-center gap-3">
+                    <Link
+                      href={detailPath}
+                      className="text-sm font-semibold text-black hover:underline"
+                    >
+                      View All
+                    </Link>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        aria-label="Previous related articles"
+                        className="grid h-9 w-9 place-items-center rounded-full border border-neutral-300 text-lg"
+                      >
+                        ‹
+                      </button>
+                      <button
+                        type="button"
+                        aria-label="Next related articles"
+                        className="grid h-9 w-9 place-items-center rounded-full border border-neutral-300 text-lg"
+                      >
+                        ›
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex min-w-0 gap-4 overflow-x-auto pb-2">
+                <div className="flex gap-4 overflow-x-auto pb-2">
                   {related.map((relatedItem) => (
                     <RelatedCard
                       key={relatedItem._id ?? relatedItem.slug}
@@ -328,58 +352,28 @@ export default function DetailPageLayout({
               </section>
             ) : null}
 
-            <div className="mt-8">
-              <AdvertCard wide />
-            </div>
-
+            <AdvertBlock />
             <Conversation />
           </div>
 
-          <aside className="grid min-w-0 content-start gap-5">
-            <AdvertCard />
-            <SidebarList
+          <aside className="grid content-start gap-5">
+            <AdvertBlock tall />
+            <SidebarWidget
               title="Categories"
               items={sidebarCategories}
               getHref={(category) => `/categories/${category.slug}`}
             />
-            <AdvertCard />
-            <SidebarList
-              title="Resources by Region"
+            <SidebarWidget
+              title="News by Country"
               items={sidebarCountries}
-              getHref={(country) => `/countries/${country.slug}`}
+              getHref={(countryItem) => `/countries/${countryItem.slug}`}
             />
+            <AdvertBlock tall />
           </aside>
         </div>
       </main>
 
-      <footer className="mt-8 bg-[#10243f] px-4 py-8 text-white sm:px-8">
-        <div className="mx-auto flex max-w-7xl flex-col gap-6 md:flex-row md:items-center md:justify-between">
-          <div>
-            <h2 className="text-xl font-black">Stay in the loop</h2>
-            <p className="mt-1 text-sm text-slate-300">
-              Get practical accessibility tips, standards updates, and
-              inclusive design resources.
-            </p>
-          </div>
-          <form className="flex w-full flex-col overflow-hidden rounded-2xl border-2 border-white bg-white sm:flex-row sm:rounded-full md:max-w-lg">
-            <input
-              className="h-11 min-w-0 flex-1 px-5 text-sm text-slate-900 outline-none"
-              placeholder="Email Address"
-              type="email"
-            />
-            <button className="h-11 w-full bg-[#5eead4] text-sm font-bold text-[#10243f] sm:w-36">
-              Subscribe
-            </button>
-          </form>
-        </div>
-        <div className="mx-auto mt-8 flex max-w-7xl flex-col gap-4 border-t border-white/10 pt-5 text-xs text-slate-300 md:flex-row md:justify-between">
-          <p>© 2026 innov8ive Solutions. Inclusive access for every user.</p>
-          <div className="flex gap-6">
-            <a href="#">Terms and Conditions</a>
-            <a href="#">Privacy Policy</a>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
