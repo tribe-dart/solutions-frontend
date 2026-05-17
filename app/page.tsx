@@ -38,11 +38,11 @@ export default async function Home({ searchParams }: HomeProps) {
     <div className="min-h-screen bg-[#f5f5f5]">
       <SiteHeader active="home" />
 
-      <main className="mx-auto max-w-7xl px-4 pb-4 sm:px-8">
-        <section className="pt-6">
+      <main className="w-full px-4 pb-6 sm:px-6 lg:px-10 xl:px-12 2xl:px-14">
+        <section className="w-full pt-6">
           <Link
             href={topStoryHref}
-            className="relative block min-h-[380px] overflow-hidden rounded-3xl bg-cover bg-center no-underline sm:min-h-[440px]"
+            className="relative block min-h-[380px] w-full overflow-hidden rounded-3xl bg-cover bg-center no-underline sm:min-h-[440px] lg:min-h-[480px]"
             style={{ backgroundImage: `url(${heroImage})` }}
           >
             <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/35 to-transparent" />
@@ -65,7 +65,7 @@ export default async function Home({ searchParams }: HomeProps) {
           />
         </section>
 
-        <section className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1.45fr)]">
+        <section className="mt-8 grid w-full gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.65fr)] xl:grid-cols-[minmax(0,1fr)_minmax(0,1.85fr)]">
           {spotlight ? (
             <HomeFeaturedSpotlight
               item={spotlight}
@@ -78,7 +78,7 @@ export default async function Home({ searchParams }: HomeProps) {
           )}
 
           {gridItems.length ? (
-            <div className="grid gap-5 sm:grid-cols-2">
+            <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
               {gridItems.map((item) => (
                 <HomeNewsCard
                   key={item.slug}

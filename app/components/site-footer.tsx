@@ -15,8 +15,8 @@ const footerLinks = [
 
 export default function SiteFooter() {
   return (
-    <footer className="bg-black px-4 py-10 text-white sm:px-8">
-      <div className="mx-auto max-w-7xl">
+    <footer className="bg-black px-4 py-10 text-white sm:px-6 lg:px-10 xl:px-12 2xl:px-14">
+      <div className="w-full">
         <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
           <div className="max-w-sm">
             <h2 className="text-2xl font-bold">Follow Us</h2>

@@ -10,8 +10,8 @@ const navLinkClass = (isActive: boolean) =>
 
 export default function SiteHeader({ active }: SiteHeaderProps) {
   return (
-    <header className="bg-black px-4 py-3 text-white sm:px-8">
-      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4">
+    <header className="bg-black px-4 py-3 text-white sm:px-6 lg:px-10 xl:px-12 2xl:px-14">
+      <div className="flex w-full flex-wrap items-center justify-between gap-4">
         <Link href="/" className="inline-flex items-center" aria-label="innov8ive Solutions Home">
           <Image
             src="/logo.png"
