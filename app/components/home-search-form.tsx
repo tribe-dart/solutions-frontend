@@ -66,15 +66,18 @@ const countryCodeBySlug: Record<string, string> = {
   uganda: "ug",
   zambia: "zm",
   zimbabwe: "zw",
+  global: "un",
 };
 
 type HomeSearchFormProps = {
   countries: TaxonomySummary[];
+  categories: TaxonomySummary[];
   selectedCountry?: string;
 };
 
 export default function HomeSearchForm({
   countries,
+  categories,
   selectedCountry,
 }: HomeSearchFormProps) {
   const router = useRouter();
@@ -90,6 +93,7 @@ export default function HomeSearchForm({
   const [country, setCountry] = useState<CountryOption | null>(
     options.find((option) => option.value === selectedCountry) ?? null,
   );
+  const [category, setCategory] = useState("");
   const [query, setQuery] = useState("");
 
   const handleCountryChange = (option: CountryOption | null) => {
@@ -99,6 +103,11 @@ export default function HomeSearchForm({
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (category && !query.trim() && !country) {
+      router.push(`/categories/${category}`);
+      return;
+    }
 
     const params = new URLSearchParams();
     const trimmedQuery = query.trim();
@@ -116,21 +125,21 @@ export default function HomeSearchForm({
 
   return (
     <form
-      className="relative z-10 mt-10 flex flex-col gap-3 rounded-2xl bg-white/95 p-3 shadow-lg ring-1 ring-black/5 md:absolute md:bottom-5 md:left-8 md:right-8 md:mt-0 md:flex-row md:items-center md:gap-4"
+      className="relative z-10 -mt-6 flex flex-col gap-3 rounded-2xl bg-white p-3 shadow-lg ring-1 ring-black/5 sm:-mt-8 sm:flex-row sm:items-center sm:gap-3"
       onSubmit={handleSubmit}
     >
-      <div className="w-full md:w-56">
+      <div className="w-full sm:w-52">
         <Select<CountryOption, false>
           className="country-select-wrapper"
           classNamePrefix="country-select"
           options={options}
           value={country}
-          placeholder="Select Region"
+          placeholder="Select Country"
           isClearable
           isSearchable
           maxMenuHeight={280}
           onChange={handleCountryChange}
-          noOptionsMessage={() => "No regions with published accessibility posts"}
+          noOptionsMessage={() => "No countries with published posts"}
           formatOptionLabel={(option) => (
             <div className="country-option-row">
               {option.code ? (
@@ -147,18 +156,36 @@ export default function HomeSearchForm({
           )}
         />
       </div>
+
+      <select
+        className="h-[52px] w-full rounded-xl border border-neutral-200 bg-[#ececec] px-4 text-sm text-neutral-700 outline-none sm:w-44"
+        value={category}
+        onChange={(event) => setCategory(event.target.value)}
+      >
+        <option value="">Category</option>
+        {categories.map((item) => (
+          <option key={item.id} value={item.slug}>
+            {item.name}
+          </option>
+        ))}
+      </select>
+
       <input
-        className="h-[52px] min-w-0 flex-1 rounded-xl border border-slate-300 bg-white px-4 text-base text-slate-900 outline-none transition placeholder:text-slate-500 focus:border-[#0f766e] focus:ring-2 focus:ring-[#0f766e]/25"
+        className="h-[52px] min-w-0 flex-1 rounded-xl border border-neutral-200 bg-[#ececec] px-4 text-sm text-black outline-none placeholder:text-neutral-500"
         type="search"
         value={query}
         onChange={(event) => setQuery(event.target.value)}
-        placeholder="Search accessibility guides, updates, or topics"
+        placeholder="Type news article here"
       />
+
       <button
-        className="flex h-[52px] w-full items-center justify-center gap-2 rounded-xl bg-[#5eead4] px-6 font-semibold text-[#10243f] transition hover:bg-[#2dd4bf] md:w-[170px]"
+        className="flex h-[52px] w-full items-center justify-center gap-2 rounded-full bg-black px-6 text-sm font-bold text-white transition hover:bg-neutral-800 sm:w-auto sm:min-w-[140px]"
         type="submit"
       >
-        Search <span aria-hidden="true">➜</span>
+        Search
+        <span className="grid h-7 w-7 place-items-center rounded-full bg-[#c69762] text-xs text-black">
+          →
+        </span>
       </button>
     </form>
   );

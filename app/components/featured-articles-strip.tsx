@@ -31,12 +31,30 @@ export default function FeaturedArticlesStrip({
       <div className="mx-auto max-w-7xl">
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-2xl font-bold text-black">Featured Articles</h2>
-          <Link
-            href="/articles"
-            className="text-sm font-semibold text-black underline-offset-2 hover:underline"
-          >
-            View All
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/articles"
+              className="text-sm font-semibold text-black underline-offset-2 hover:underline"
+            >
+              View All
+            </Link>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                aria-label="Previous articles"
+                className="grid h-9 w-9 place-items-center rounded-full border border-neutral-300 text-lg text-black"
+              >
+                ‹
+              </button>
+              <button
+                type="button"
+                aria-label="Next articles"
+                className="grid h-9 w-9 place-items-center rounded-full border border-neutral-300 text-lg text-black"
+              >
+                ›
+              </button>
+            </div>
+          </div>
         </div>
 
         <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
